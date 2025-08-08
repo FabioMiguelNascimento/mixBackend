@@ -4,6 +4,7 @@ import makeCreateOrder from '@/use-cases/order/createOrder.js';
 import makeFindAllOrders from '@/use-cases/order/findAllOrders.js';
 import makeFindOrderById from '@/use-cases/order/findOrderById.js';
 import makeUpdateOrderStatus from '@/use-cases/order/updateOrderStatus.js';
+import makeUpdateOrder from '@/use-cases/order/updateOrder.js';
 import { CreateOrderInput, ListOrderInput, OrderIdSchema } from '@/schema/order.schema.js';
 
 const orderRepository = new OrderRepository();
@@ -56,6 +57,20 @@ export async function handleUpdateOrderStatus(req: Request, res: Response, next:
         const updatedOrder = await updateOrderStatus(id, status);
         
         res.status(200).json({ code: 200, message: 'Status do pedido atualizado com sucesso', data: updatedOrder });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export async function handleUpdateOrder(req: Request, res: Response, next: NextFunction) {
+    try {
+        const { id } = req.params;
+        const data = req.validatedData;
+
+        const updateOrder = makeUpdateOrder(orderRepository);
+        const updatedOrder = await updateOrder(id, data);
+
+        res.status(200).json({ code: 200, message: 'Pedido atualizado com sucesso', data: updatedOrder });
     } catch (error) {
         next(error);
     }

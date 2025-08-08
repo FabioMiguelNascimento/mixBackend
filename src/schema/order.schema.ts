@@ -38,3 +38,17 @@ export const updateOrderStatusSchema = z.object({
 });
 
 export type UpdateOrderStatusInput = z.infer<typeof updateOrderStatusSchema>;
+
+const UpdateOrderItemSchema = z.object({
+    productId: z.string().uuid('ID de produto inválido.'),
+    quantity: z.number().int().min(1, 'A quantidade deve ser no mínimo 1.'),
+});
+
+export const updateOrderSchema = z.object({
+    customerName: z.string().min(3, 'O nome do cliente é obrigatório.').optional(),
+    customerContact: z.string().min(10, 'O contato do cliente é obrigatório e deve ser válido.').optional(),
+    notes: z.string().max(500, 'As observações não podem exceder 500 caracteres.').optional(),
+    items: z.array(UpdateOrderItemSchema).min(1, 'O pedido deve conter pelo menos um item.').optional(),
+});
+
+export type UpdateOrderInput = z.infer<typeof updateOrderSchema>;

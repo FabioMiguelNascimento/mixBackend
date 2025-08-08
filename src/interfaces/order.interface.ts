@@ -1,5 +1,5 @@
-import { Order } from "@prisma/client";
-import { CreateOrderInput, ListOrderInput } from "@/schema/order.schema.js";
+import { CreateOrderInput, ListOrderInput, UpdateOrderInput } from "@/schema/order.schema.js";
+import { Order, OrderStatus } from "@prisma/client";
 
 export type PaginatedOrdersResult = {
     orders: Order[];
@@ -14,4 +14,5 @@ export default interface IOrderRepository {
     findAll(params: ListOrderInput): Promise<PaginatedOrdersResult>;
     findById(id: string): Promise<Order | null>;
     updateStatus(id: string, status: OrderStatus): Promise<Order | null>;
+    update(id: string, data: UpdateOrderInput): Promise<Order | null>;
 }
