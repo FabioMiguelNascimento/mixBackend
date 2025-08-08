@@ -8,6 +8,9 @@ import { errorHandler, requestNotFound } from './infrastructure/https/error/Erro
 import pingRoute from './infrastructure/https/routes/ping.route.js';
 import userRoute from './infrastructure/https/routes/user.route.js';
 import authRoute from './infrastructure/https/routes/auth.route.js';
+import productRoute from './infrastructure/https/routes/product.route.js';
+import categoryRoute from './infrastructure/https/routes/category.route.js';
+import tagRoute from './infrastructure/https/routes/tag.route.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -22,6 +25,9 @@ app.use(helmet());
 app.use('/api/ping', pingRoute);
 app.use('/api/user', userRoute);
 app.use('/api/auth', authRoute);
+app.use('/api/product', productRoute);
+app.use('/api/category', categoryRoute);
+app.use('/api/tag', tagRoute);
 
 app.use(errorHandler);
 app.use(requestNotFound);

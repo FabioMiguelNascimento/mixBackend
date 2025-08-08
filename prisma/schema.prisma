@@ -58,6 +58,7 @@ model Product {
   description String?
   sku         String?       @unique
   price       Float
+  discount    Float        @default(0)
   finalPrice  Float
   stock       Int           @default(0)
   type        ProductType
@@ -135,7 +136,7 @@ model BasketItem {
   basket    Product @relation("BasketComposition", fields: [basketId], references: [id])
   productId String
   product   Product @relation("ProductInBasket", fields: [productId], references: [id])
-  quantity  Int
+  quantity  Int 
 
   @@id([basketId, productId])
   @@map("basket_items")
