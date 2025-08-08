@@ -5,3 +5,7 @@ export const createTagSchema = z.object({
 });
 
 export type CreateTagInput = z.infer<typeof createTagSchema>;
+
+export const TagId = z.object({
+  id: z.string().uuid('ID inválido. Deve ser um UUID válido.'),
+});

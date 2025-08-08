@@ -5,4 +5,6 @@ export default interface ITagRepository {
     create(data: CreateTagInput): Promise<Tag>;
     findAll(): Promise<Tag[]>;
     findByName(name: string): Promise<Tag | null>;
+    findById(id: string): Promise<Tag | null>;
+    delete(id: string): Promise<void>;
 }

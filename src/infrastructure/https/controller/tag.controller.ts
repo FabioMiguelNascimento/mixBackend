@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import TagRepository from '@/infrastructure/database/tag.repository.js';
 import makeCreateTag from '@/use-cases/tag/createTag.js';
 import makeFindAllTags from '@/use-cases/tag/findAllTags.js';
+import makeDeleteTag from '@/use-cases/tag/deleteTag.js';
 
 const tagRepository = new TagRepository();
 
@@ -20,6 +21,19 @@ export async function handleFindAllTags(req: Request, res: Response, next: NextF
         const findAllTags = makeFindAllTags(tagRepository);
         const tags = await findAllTags();
         res.status(200).json(tags);
+    } catch (error) {
+        next(error);
+    }
+}
+
+export async function handleDeleteTag(req: Request, res: Response, next: NextFunction) {
+    try {
+        const { id } = req.validatedData;
+
+        const deleteTagCase = makeDeleteTag(tagRepository);
+        await deleteTagCase(id);
+        
+        res.status(204).send({ code: 204, message: "Tag deletada com sucesso" });
     } catch (error) {
         next(error);
     }
