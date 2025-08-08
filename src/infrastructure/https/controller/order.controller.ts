@@ -50,7 +50,7 @@ export async function handleFindOrderById(req: Request, res: Response, next: Nex
 export async function handleUpdateOrderStatus(req: Request, res: Response, next: NextFunction) {
     try {
         const { status } = req.validatedData;
-        const { id } = req.params;
+        const { id } = req.validatedData;
 
         const updateOrderStatus = makeUpdateOrderStatus(orderRepository);
         const updatedOrder = await updateOrderStatus(id, status);

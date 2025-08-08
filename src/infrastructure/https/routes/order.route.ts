@@ -15,6 +15,6 @@ router.post('/list', validateBody(listOrderSchema), handleFindAllOrders);
 
 router.get('/:id', validateParams(OrderIdSchema), handleFindOrderById);
 
-router.patch('/status/:id',validateBody(updateOrderStatusSchema), handleUpdateOrderStatus);
+router.patch('/status/:id', validateBody(updateOrderStatusSchema), validateParams(OrderIdSchema), handleUpdateOrderStatus);
 
 export default router;
