@@ -146,6 +146,7 @@ model Order {
   id            String      @id @default(uuid())
   customerName  String
   customerContact String
+  customerNotes String?
   totalAmount   Float
   status        OrderStatus @default(PENDING)
   createdAt     DateTime    @default(now())

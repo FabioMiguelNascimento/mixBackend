@@ -11,6 +11,7 @@ import authRoute from './infrastructure/https/routes/auth.route.js';
 import productRoute from './infrastructure/https/routes/product.route.js';
 import categoryRoute from './infrastructure/https/routes/category.route.js';
 import tagRoute from './infrastructure/https/routes/tag.route.js';
+import orderRoute from './infrastructure/https/routes/order.route.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -28,6 +29,7 @@ app.use('/api/auth', authRoute);
 app.use('/api/product', productRoute);
 app.use('/api/category', categoryRoute);
 app.use('/api/tag', tagRoute);
+app.use('/api/order', orderRoute);
 
 app.use(errorHandler);
 app.use(requestNotFound);
