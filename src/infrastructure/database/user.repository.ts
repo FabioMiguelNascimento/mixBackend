@@ -26,4 +26,16 @@ export default class UserRepository implements UsersInterface {
         });
     }
 
+    findAll(): Promise<User[] | void> {
+        return prisma.user.findMany({
+            orderBy: [
+                {
+                    name: 'asc'
+                },
+                {
+                    createdAt: 'desc'
+                }
+            ]
+        });
+    }
 }
