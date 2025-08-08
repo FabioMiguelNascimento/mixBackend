@@ -82,7 +82,7 @@ model Image {
   id        String   @id @default(uuid())
   url       String
   productId String
-  product   Product  @relation(fields: [productId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -102,9 +102,9 @@ model Category {
 
 model ProductCategory {
   productId  String
-  product    Product  @relation(fields: [productId], references: [id])
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   categoryId String
-  category   Category @relation(fields: [categoryId], references: [id])
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@id([productId, categoryId])
   @@map("product_categories")
@@ -123,9 +123,9 @@ model Tag {
 
 model ProductTag {
   productId String
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   tagId     String
-  tag       Tag     @relation(fields: [tagId], references: [id])
+  tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@id([productId, tagId])
   @@map("product_tags")
@@ -133,9 +133,9 @@ model ProductTag {
 
 model BasketItem {
   basketId  String
-  basket    Product @relation("BasketComposition", fields: [basketId], references: [id])
+  basket    Product @relation("BasketComposition", fields: [basketId], references: [id], onDelete: Cascade)
   productId String
-  product   Product @relation("ProductInBasket", fields: [productId], references: [id])
+  product   Product @relation("ProductInBasket", fields: [productId], references: [id], onDelete: Cascade)
   quantity  Int 
 
   @@id([basketId, productId])
