@@ -2,8 +2,9 @@ import { Request, Response, NextFunction } from 'express';
 import ProductRepository from '@/infrastructure/database/product.repository.js';
 import makeCreateProduct from '@/use-cases/product/createProduct.js';
 import makeFindAllProducts from '@/use-cases/product/findAllProducts.js';
-import { CreateProductInput, ListProductInput } from '@/schema/product.schema.js';
+import { CreateProductInput, ListProductInput, UpdateProductInput } from '@/schema/product.schema.js';
 import makeFindProduct from '@/use-cases/product/findById.js';
+import makeUpdateProduct from '@/use-cases/product/updateProduct.js';
 
 const productRepository = new ProductRepository();
 
@@ -45,3 +46,17 @@ export const handleFindProduct = async (req: Request, res: Response, next: NextF
     next(err)
   }
 }
+
+export const handleUpdateProduct = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.validatedData;
+    const data: UpdateProductInput = req.validatedData;
+
+    const updateProductCase = makeUpdateProduct(productRepository);
+    const updatedProduct = await updateProductCase(id, data);
+
+    res.status(200).json({ code: 200, message: 'Produto atualizado com sucesso', data: updatedProduct });
+  } catch (error) {
+    next(error);
+  }
+};

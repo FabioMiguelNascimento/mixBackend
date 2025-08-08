@@ -1,4 +1,4 @@
-import { CreateProductInput, ListProductInput } from "@/schema/product.schema.js";
+import { CreateProductInput, ListProductInput, UpdateProductInput } from "@/schema/product.schema.js";
 import { Product } from "@prisma/client";
 
 export type PaginatedProductsResult = {
@@ -14,6 +14,5 @@ export default interface IProductRepository {
     findBySku(sku: string): Promise<Product | null>;
     findAll(params: ListProductInput): Promise<PaginatedProductsResult>;
     findById(id: string): Promise<Product | null>;
-    // update(id: string, productData: Partial<CreateProductInput>): Promise<Product>;
-    // delete(id: string): Promise<void>;
+    update(id: string, data: UpdateProductInput): Promise<Product | null>;
 }

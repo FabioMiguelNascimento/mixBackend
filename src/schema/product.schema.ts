@@ -74,3 +74,57 @@ export const productIdSchema = z.object({
 });
 
 export type ProductIdInput = z.infer<typeof productIdSchema>;
+
+const UpdateBasketItemSchema = z.object({
+  productId: z.string().uuid('ID de produto inválido.'),
+  quantity: z.number().int().min(1, 'Quantidade deve ser no mínimo 1'),
+});
+
+const UpdateImageSchema = z.object({
+  url: z.string().url('URL da imagem inválida'),
+});
+
+export const updateProductSchema = z
+  .object({
+    name: z.string().min(1, 'Nome é necessário').optional(),
+    description: z.string().optional(),
+    sku: z.string().optional(),
+    price: z.number().min(0, 'Preço deve ser um número positivo').optional(),
+    finalPrice: z.number().min(0, 'Preço final deve ser um número positivo').optional(),
+    stock: z.number().int().min(0, 'Estoque deve ser um inteiro não negativo').optional(),
+    type: ProductTypeEnum.optional(),
+    status: ProductStatusEnum.optional(),
+
+    categoryIds: z.array(z.string().uuid()).min(1, 'É necessário no mínimo uma categoria').optional(),
+    tagIds: z.array(z.string().uuid()).optional(),
+    images: z.array(UpdateImageSchema).optional(),
+
+    basketItems: z.array(UpdateBasketItemSchema).optional(),
+  })
+  .refine((data) => {
+    // If type is updated to BASKET, basketItems must be provided and not empty
+    if (data.type === 'BASKET' && (!data.basketItems || data.basketItems.length === 0)) {
+      return false;
+    }
+    // If type is updated to SINGLE, basketItems should not be provided or must be empty
+    if (data.type === 'SINGLE' && data.basketItems && data.basketItems.length > 0) {
+      return false;
+    }
+    return true;
+  }, {
+    message: 'Cestas devem conter itens e produtos únicos não devem.',
+    path: ['basketItems'],
+  })
+  .refine((data) => {
+    if (data.finalPrice !== undefined && data.price !== undefined) {
+      return data.finalPrice <= data.price;
+    }
+    // If only one of them is provided, or neither, we can't validate this rule here.
+    // This rule applies only when both are present.
+    return true;
+  }, {
+    message: 'O preço final não pode ser maior que o preço original.',
+    path: ['finalPrice'],
+  });
+
+export type UpdateProductInput = z.infer<typeof updateProductSchema>;

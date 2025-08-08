@@ -1,8 +1,9 @@
 import IProductRepository from "@/interfaces/product.interface.js";
 import prisma from "@/infrastructure/database/prisma.js";
-import { CreateProductInput, ListProductInput } from "@/schema/product.schema.js";
+import { CreateProductInput, ListProductInput, UpdateProductInput } from "@/schema/product.schema.js";
 import { Prisma, Product } from "@prisma/client";
 import { PaginatedProductsResult } from "@/interfaces/product.interface.js";
+import { NotFoundError } from "../https/error/HttpErrors.js";
 
 export default class ProductRepository implements IProductRepository {
 
@@ -136,6 +137,83 @@ export default class ProductRepository implements IProductRepository {
                 images: true,
                 basketItems: { include: { product: true } },
             },
+        });
+    }
+
+    async update(id: string, data: UpdateProductInput): Promise<Product | null> {
+        const { categoryIds, tagIds, images, basketItems, ...productData } = data;
+
+        return prisma.$transaction(async (tx) => {
+            const existingProduct = await tx.product.findUnique({
+                where: { id },
+                include: {
+                    productCategories: true,
+                    productTags: true,
+                    images: true,
+                    basketItems: true,
+                },
+            });
+
+            if (!existingProduct) {
+                throw new NotFoundError(`Produto com ID ${id} não encontrado.`);
+            }
+
+            const dataToUpdate: Prisma.ProductUpdateInput = { ...productData };
+
+            // Handle categories update
+            if (categoryIds) {
+                await tx.productCategory.deleteMany({ where: { productId: id } });
+                dataToUpdate.productCategories = {
+                    create: categoryIds.map(categoryId => ({
+                        category: { connect: { id: categoryId } },
+                    })),
+                };
+            }
+
+            // Handle tags update
+            if (tagIds) {
+                await tx.productTag.deleteMany({ where: { productId: id } });
+                dataToUpdate.productTags = {
+                    create: tagIds.map(tagId => ({
+                        tag: { connect: { id: tagId } },
+                    })),
+                };
+            }
+
+            // Handle images update
+            if (images) {
+                await tx.image.deleteMany({ where: { productId: id } });
+                dataToUpdate.images = {
+                    create: images.map(image => ({ url: image.url })),
+                };
+            }
+
+            // Handle basket items update (more complex)
+            if (basketItems) {
+                // Delete existing basket items for this product
+                await tx.basketItem.deleteMany({ where: { basketId: id } });
+
+                // Create new basket items
+                dataToUpdate.basketItems = {
+                    create: basketItems.map(item => ({
+                        quantity: item.quantity,
+                        product: { connect: { id: item.productId } },
+                    })),
+                };
+            }
+
+            const updatedProduct = await tx.product.update({
+                where: { id },
+                data: dataToUpdate,
+                include: {
+                    productCategories: { include: { category: true } },
+                    productTags: { include: { tag: true } },
+                    images: true,
+                    basketItems: { include: { product: true } },
+                },
+            });
+
+            return updatedProduct;
         });
     }
 }
