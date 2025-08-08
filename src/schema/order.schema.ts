@@ -32,3 +32,9 @@ export const listOrderSchema = z.object({
 
 export type CreateOrderInput = z.infer<typeof createOrderSchema>;
 export type ListOrderInput = z.infer<typeof listOrderSchema>;
+
+export const updateOrderStatusSchema = z.object({
+    status: z.nativeEnum(OrderStatus, { message: 'Status inválido.' }),
+});
+
+export type UpdateOrderStatusInput = z.infer<typeof updateOrderStatusSchema>;

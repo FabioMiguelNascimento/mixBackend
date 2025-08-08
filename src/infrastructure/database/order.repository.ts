@@ -1,7 +1,7 @@
 import prisma from "@/infrastructure/database/prisma.js";
 import IOrderRepository, { PaginatedOrdersResult } from "@/interfaces/order.interface.js";
 import { CreateOrderInput, ListOrderInput } from "@/schema/order.schema.js";
-import { Order, Prisma } from "@prisma/client";
+import { Order, OrderStatus, Prisma } from "@prisma/client";
 import { ConflictError, NotFoundError } from "../https/error/HttpErrors.js";
 
 export default class OrderRepository implements IOrderRepository {
@@ -112,6 +112,16 @@ export default class OrderRepository implements IOrderRepository {
     async findById(id: string): Promise<Order | null> {
         return prisma.order.findUnique({
             where: { id },
+            include: {
+                orderItems: { include: { product: true } },
+            },
+        });
+    }
+
+    async updateStatus(id: string, status: OrderStatus): Promise<Order | null> {
+        return prisma.order.update({
+            where: { id },
+            data: { status },
             include: {
                 orderItems: { include: { product: true } },
             },
