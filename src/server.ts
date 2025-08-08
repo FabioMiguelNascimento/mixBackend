@@ -7,6 +7,7 @@ import http from 'http';
 import { errorHandler, requestNotFound } from './infrastructure/https/error/ErrorHandler.js';
 import pingRoute from './infrastructure/https/routes/ping.route.js';
 import userRoute from './infrastructure/https/routes/user.route.js';
+import authRoute from './infrastructure/https/routes/auth.route.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -20,6 +21,7 @@ app.use(helmet());
 
 app.use('/api/ping', pingRoute);
 app.use('/api/user', userRoute);
+app.use('/api/auth', authRoute);
 
 app.use(errorHandler);
 app.use(requestNotFound);

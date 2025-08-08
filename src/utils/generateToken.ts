@@ -1,8 +1,9 @@
 import "dotenv/config";
 import jwt, { Secret, SignOptions } from "jsonwebtoken";
 import { StringValue } from "ms";
+import { Role } from "@prisma/client";
 
-export default function generateToken(id: string): string {
+export default function generateToken(id: string, role: Role): string {
   const secretEnv = process.env.JWT_SECRET;
   const timeEnv = process.env.JWT_TIME;
 
@@ -18,6 +19,7 @@ export default function generateToken(id: string): string {
   
   const payload = {
     id: id,
+    role: role,
   };
 
   const options: SignOptions = { expiresIn: TIME };
