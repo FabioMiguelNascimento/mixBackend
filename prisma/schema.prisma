@@ -21,6 +21,25 @@ enum Role {
   SELLER
 }
 
+enum ProductType {
+  SINGLE
+  BASKET
+}
+
+enum ProductStatus {
+  ACTIVE
+  DRAFT
+  ARCHIVED
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  READY_FOR_PICKUP
+  COMPLETED
+  CANCELED
+}
+
 model User {
   id        String   @id @default(uuid())
   name      String
@@ -31,4 +50,119 @@ model User {
   updatedAt DateTime @updatedAt
 
   @@map("users")
+}
+
+model Product {
+  id          String        @id @default(uuid())
+  name        String
+  description String?
+  sku         String?       @unique
+  price       Float
+  finalPrice  Float
+  stock       Int           @default(0)
+  type        ProductType
+  status      ProductStatus @default(DRAFT)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  images            Image[]
+  productCategories ProductCategory[]
+  productTags       ProductTag[]
+
+  basketItems   BasketItem[] @relation("BasketComposition")
+  composedIn    BasketItem[] @relation("ProductInBasket")
+
+  orderItems OrderItem[]
+
+  @@map("products")
+}
+
+model Image {
+  id        String   @id @default(uuid())
+  url       String
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("images")
+}
+
+model Category {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  productCategories ProductCategory[]
+
+  @@map("categories")
+}
+
+model ProductCategory {
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id])
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  @@id([productId, categoryId])
+  @@map("product_categories")
+}
+
+model Tag {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  productTags ProductTag[]
+
+  @@map("tags")
+}
+
+model ProductTag {
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  tagId     String
+  tag       Tag     @relation(fields: [tagId], references: [id])
+
+  @@id([productId, tagId])
+  @@map("product_tags")
+}
+
+model BasketItem {
+  basketId  String
+  basket    Product @relation("BasketComposition", fields: [basketId], references: [id])
+  productId String
+  product   Product @relation("ProductInBasket", fields: [productId], references: [id])
+  quantity  Int
+
+  @@id([basketId, productId])
+  @@map("basket_items")
+}
+
+model Order {
+  id            String      @id @default(uuid())
+  customerName  String
+  customerContact String
+  totalAmount   Float
+  status        OrderStatus @default(PENDING)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  orderItems OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Float
+
+  @@id([orderId, productId])
+  @@map("order_items")
 }
