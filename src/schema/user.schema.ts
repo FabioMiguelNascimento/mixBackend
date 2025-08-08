@@ -6,4 +6,4 @@ export const createUserSchema = z.object({
     password: z.string().min(6).max(100),
 });
 
-export type createUserSchema = z.infer<typeof createUserSchema>;
+export type CreateUserSchema = z.infer<typeof createUserSchema>;

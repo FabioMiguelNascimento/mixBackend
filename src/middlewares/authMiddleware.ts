@@ -1,9 +1,10 @@
+import { Role } from '@prisma/client';
 import { Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
 interface TokenPayload extends JwtPayload {
     id: string;
-    permission: string;
+    role: Role;
     companyId: string;
 }
 
@@ -26,8 +27,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction):
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET) as TokenPayload;
         req.userId = decoded.id;
-        req.userPermission = decoded.permission;
-        req.companyId = decoded.companyId;
+        req.userRole = decoded.role;
         
         next();
     } catch (err) {

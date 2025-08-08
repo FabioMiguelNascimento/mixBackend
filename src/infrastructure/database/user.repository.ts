@@ -1,12 +1,12 @@
 import UsersInterface from "@/interfaces/user.interface.js";
 import prisma from "@/infrastructure/database/prisma.js";
-import { createUserSchema } from "@/schema/user.schema.js";
+import { CreateUserSchema } from "@/schema/user.schema.js";
 import { User } from "@prisma/client";
 import { encodePassword } from "@/utils/bcrypt.js";
 
 export default class UserRepository implements UsersInterface {
 
-    async create(user: createUserSchema): Promise<User | void> {
+    async create(user: CreateUserSchema): Promise<User | void> {
         const hashedPassword = encodePassword(user.password);
         
         return prisma.user.create({

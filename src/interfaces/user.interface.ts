@@ -1,7 +1,7 @@
-import { createUserSchema } from "@/schema/user.schema.js";
+import { CreateUserSchema } from "@/schema/user.schema.js";
 import { User } from "@prisma/client";
 
 export default interface UsersInterface {
-    create(user: createUserSchema): Promise<User | void>;
+    create(user: CreateUserSchema): Promise<User | void>;
     findUserByEmail(email: string): Promise<User | null>;
 }
