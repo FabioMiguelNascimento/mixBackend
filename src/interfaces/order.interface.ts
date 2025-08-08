@@ -12,5 +12,5 @@ export type PaginatedOrdersResult = {
 export default interface IOrderRepository {
     create(data: CreateOrderInput): Promise<Order>;
     findAll(params: ListOrderInput): Promise<PaginatedOrdersResult>;
-    // findById(id: string): Promise<Order | null>;
+    findById(id: string): Promise<Order | null>;
 }

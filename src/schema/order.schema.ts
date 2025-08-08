@@ -1,6 +1,10 @@
 import { OrderStatus } from '@prisma/client';
 import z from 'zod';
 
+export const OrderIdSchema = z.object({
+  id: z.string().uuid('ID de pedido inválido.'),
+});
+
 const OrderItemSchema = z.object({
   productId: z.string().uuid('ID de produto inválido.'),
   quantity: z.number().int().min(1, 'A quantidade deve ser no mínimo 1.'),

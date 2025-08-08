@@ -108,4 +108,13 @@ export default class OrderRepository implements IOrderRepository {
             totalPages: Math.ceil(total / limit),
         };
     }
+
+    async findById(id: string): Promise<Order | null> {
+        return prisma.order.findUnique({
+            where: { id },
+            include: {
+                orderItems: { include: { product: true } },
+            },
+        });
+    }
 }
