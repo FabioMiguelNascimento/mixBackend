@@ -20,4 +20,16 @@ export default class CategoryRepository implements ICategoryRepository {
             where: { name },
         });
     }
+
+    async findById(id: string): Promise<Category | null> {
+        return prisma.category.findUnique({
+            where: { id },
+        });
+    }
+
+    async delete(id: string): Promise<void> {
+        await prisma.category.delete({
+            where: { id },
+        });
+    }
 }

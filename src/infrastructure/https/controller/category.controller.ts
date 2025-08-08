@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import CategoryRepository from '@/infrastructure/database/category.repository.js';
 import makeCreateCategory from '@/use-cases/category/createCategory.js';
 import makeFindAllCategories from '@/use-cases/category/findAllCategories.js';
+import makeDeleteCategory from '@/use-cases/category/deleteCategory.js';
 
 const categoryRepository = new CategoryRepository();
 
@@ -19,7 +20,20 @@ export async function handleFindAllCategories(req: Request, res: Response, next:
     try {
         const findAllCategories = makeFindAllCategories(categoryRepository);
         const categories = await findAllCategories();
-        res.status(200).json(categories);
+        res.status(200).json({ code: 200, message: 'Categorias encontradas com sucesso.', data: categories });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export async function handleDeleteCategory(req: Request, res: Response, next: NextFunction) {
+    try {
+        const { id } = req.params;
+
+        const deleteCategory = makeDeleteCategory(categoryRepository);
+        await deleteCategory(id);
+
+        res.status(204).send({ code: 204, message: 'Categoria deletada com sucesso.' });
     } catch (error) {
         next(error);
     }

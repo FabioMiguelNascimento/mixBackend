@@ -216,4 +216,11 @@ export default class ProductRepository implements IProductRepository {
             return updatedProduct;
         });
     }
+
+    async delete(id: string): Promise<void> {
+        await prisma.product.delete({
+            where: { id },
+        });
+    }
 }
+

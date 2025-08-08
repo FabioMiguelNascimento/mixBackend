@@ -15,4 +15,5 @@ export default interface IProductRepository {
     findAll(params: ListProductInput): Promise<PaginatedProductsResult>;
     findById(id: string): Promise<Product | null>;
     update(id: string, data: UpdateProductInput): Promise<Product | null>;
+    delete(id: string): Promise<void>;
 }

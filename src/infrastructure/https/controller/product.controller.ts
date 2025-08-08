@@ -5,6 +5,7 @@ import makeFindAllProducts from '@/use-cases/product/findAllProducts.js';
 import { CreateProductInput, ListProductInput, UpdateProductInput } from '@/schema/product.schema.js';
 import makeFindProduct from '@/use-cases/product/findById.js';
 import makeUpdateProduct from '@/use-cases/product/updateProduct.js';
+import makeDeleteProduct from '@/use-cases/product/deleteProduct.js';
 
 const productRepository = new ProductRepository();
 
@@ -56,6 +57,19 @@ export const handleUpdateProduct = async (req: Request, res: Response, next: Nex
     const updatedProduct = await updateProductCase(id, data);
 
     res.status(200).json({ code: 200, message: 'Produto atualizado com sucesso', data: updatedProduct });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const handleDeleteProduct = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.validatedData;
+
+    const deleteProductCase = makeDeleteProduct(productRepository);
+    await deleteProductCase(id);
+
+    res.status(204).send({ code: 204, message: "Produto deletado com sucesso" });
   } catch (error) {
     next(error);
   }

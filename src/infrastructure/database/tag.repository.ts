@@ -22,20 +22,14 @@ export default class TagRepository implements ITagRepository {
     }
 
     async findById(id: string): Promise<Tag | null> {
-        return await prisma.tag.findUnique({
-            where: { id: id}
-        })
+        return prisma.tag.findUnique({
+            where: { id },
+        });
     }
 
     async delete(id: string): Promise<void> {
-        await prisma.$transaction(async (tx) => {
-            await tx.productTag.deleteMany({
-                where: { tagId: id }
-            });
-
-            await tx.tag.delete({
-                where: { id }
-            });
+        await prisma.tag.delete({
+            where: { id },
         });
     }
 }
