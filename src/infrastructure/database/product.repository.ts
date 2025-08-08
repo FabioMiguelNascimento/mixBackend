@@ -126,4 +126,16 @@ export default class ProductRepository implements IProductRepository {
             totalPages: Math.ceil(total / limit),
         };
     }
+
+    async findById(id: string): Promise<Product | null> {
+        return prisma.product.findUnique({
+            where: { id },
+            include: {
+                productCategories: { include: { category: true } },
+                productTags: { include: { tag: true } },
+                images: true,
+                basketItems: { include: { product: true } },
+            },
+        });
+    }
 }

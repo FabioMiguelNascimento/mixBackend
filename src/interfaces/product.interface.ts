@@ -13,7 +13,7 @@ export default interface IProductRepository {
     create(product: CreateProductInput): Promise<Product>;
     findBySku(sku: string): Promise<Product | null>;
     findAll(params: ListProductInput): Promise<PaginatedProductsResult>;
-    // findById(id: string): Promise<Product | null>;
+    findById(id: string): Promise<Product | null>;
     // update(id: string, productData: Partial<CreateProductInput>): Promise<Product>;
     // delete(id: string): Promise<void>;
 }

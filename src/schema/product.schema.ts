@@ -68,3 +68,9 @@ export const listProductSchema = z.object({
 });
 
 export type ListProductInput = z.infer<typeof listProductSchema>;
+
+export const productIdSchema = z.object({
+  id: z.string().uuid('ID de produto inválido'),
+});
+
+export type ProductIdInput = z.infer<typeof productIdSchema>;
