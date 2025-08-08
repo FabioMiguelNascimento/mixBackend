@@ -1,0 +1,19 @@
+services:
+  db:
+    image: postgres:17.5
+
+    container_name: mix-db
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: 3d7685710fdbcc126e65b75ae57274978221f99874295caed1c278b219b3b700
+
+    ports:
+      - "5431:5432"
+
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:
