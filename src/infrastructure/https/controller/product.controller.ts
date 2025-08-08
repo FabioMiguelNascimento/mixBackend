@@ -1,9 +1,10 @@
-import ProductRepository from '@/infrastructure/database/product.repository.js';
-import { CreateProductInput } from '@/schema/product.schema.js';
-import makeCreateProduct from '@/use-cases/product/createProduct.js';
 import { Request, Response, NextFunction } from 'express';
+import ProductRepository from '@/infrastructure/database/product.repository.js';
+import makeCreateProduct from '@/use-cases/product/createProduct.js';
+import makeFindAllProducts from '@/use-cases/product/findAllProducts.js';
+import { CreateProductInput, ListProductInput } from '@/schema/product.schema.js';
 
-const productRepository = new ProductRepository()
+const productRepository = new ProductRepository();
 
 export const handleCreateProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -17,3 +18,16 @@ export const handleCreateProduct = async (req: Request, res: Response, next: Nex
     next(error);
   }
 };
+
+export const handleFindAllProducts = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const params: ListProductInput = req.validatedData;
+
+    const findAllProductsCase = makeFindAllProducts(productRepository);
+    const result = await findAllProductsCase(params);
+
+    res.status(200).json({ code: 200, message: 'Produtos encontrados com sucesso', data: result });
+  } catch (error) {
+    next(error);
+  }
+}

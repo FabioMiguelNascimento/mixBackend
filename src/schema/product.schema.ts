@@ -52,14 +52,19 @@ export const createProductSchema = z
 export type CreateProductInput = z.infer<typeof createProductSchema>;
 
 export const listProductSchema = z.object({
-  page: z.number().int().min(1, 'Número da página deve ser um inteiro positivo').default(1),
-  limit: z.number().int().min(1, 'Limite deve ser um inteiro positivo').default(10),
-  cursor: z.string().uuid().optional(),
-  search: z.string().optional(),
-  tag: z.string().optional(),
-  category: z.string().optional(),
-  status: ProductStatusEnum.optional(),
-  type: ProductTypeEnum.optional(),
+    page: z.number().int().min(1).default(1),
+    limit: z.number().int().min(1).max(100).default(10),
+
+    search: z.string().optional(),
+    categoryIds: z.array(z.string().uuid()).optional(),
+    tagIds: z.array(z.string().uuid()).optional(),
+    status: ProductStatusEnum.optional(),
+    type: ProductTypeEnum.optional(),
+    minPrice: z.number().min(0).optional(),
+    maxPrice: z.number().min(0).optional(),
+
+    sortBy: z.enum(['name', 'price', 'createdAt']).default('createdAt'),
+    sortOrder: z.enum(['asc', 'desc']).default('desc'),
 });
 
 export type ListProductInput = z.infer<typeof listProductSchema>;
