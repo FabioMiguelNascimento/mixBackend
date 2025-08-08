@@ -22,8 +22,14 @@ export const validateRequest = (
           break;
       }
 
-      const validatedData = schema.parse(dataToValidate);
-      req.validatedData = validatedData;
+      const validatedDataForSource = schema.parse(dataToValidate);
+
+      if (!req.validatedData) {
+        req.validatedData = {};
+      }
+      
+      Object.assign(req.validatedData, validatedDataForSource);
+
       next();
     } catch (error) {
       if (error instanceof z.ZodError) {
