@@ -1,6 +1,6 @@
 import UsersInterface from "@/interfaces/user.interface.js";
 import prisma from "@/infrastructure/database/prisma.js";
-import { CreateUserSchema } from "@/schema/user.schema.js";
+import { CreateUserSchema, UserIdType } from "@/schema/user.schema.js";
 import { User } from "@prisma/client";
 import { encodePassword } from "@/utils/bcrypt.js";
 
@@ -36,6 +36,22 @@ export default class UserRepository implements UsersInterface {
                     createdAt: 'desc'
                 }
             ]
+        });
+    }
+
+    async findUserById(id: UserIdType): Promise<User | null> {
+        return prisma.user.findUnique({
+            where: {
+                id: id.id
+            }
+        });
+    }
+
+    async delete(id: UserIdType): Promise<void> {
+        await prisma.user.delete({
+            where: {
+                id: id.id
+            }
         });
     }
 }

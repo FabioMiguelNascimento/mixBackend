@@ -1,8 +1,9 @@
-import { CreateUserSchema } from '@/schema/user.schema.js';
+import { CreateUserSchema, UserIdType } from '@/schema/user.schema.js';
 import { Request, Response, NextFunction } from 'express';
 import UserRepository from '@/infrastructure/database/user.repository.js';
 import makeCreateUser from '@/use-cases/user/createUser.js';
 import makeListUsers from '@/use-cases/user/findAll.js';
+import makeDeleteUser from '@/use-cases/user/deleteUser.js';
 
 const userRepository = new UserRepository();
 
@@ -30,3 +31,16 @@ export const handleListUsers = async (req: Request, res: Response, next: NextFun
     next(err);
   }
 };
+
+export const handleDeleteUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const id: UserIdType = req.validatedData;
+
+    const deleteUserCase = makeDeleteUser(userRepository);
+    await deleteUserCase(id);
+
+    res.status(200).json({ code: 200, message: "Usuário deletado com sucesso", });
+  } catch (err) {
+    next(err);
+  }
+}

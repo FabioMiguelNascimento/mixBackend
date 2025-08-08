@@ -7,3 +7,9 @@ export const createUserSchema = z.object({
 });
 
 export type CreateUserSchema = z.infer<typeof createUserSchema>;
+
+export const userIdSchema = z.object({
+    id: z.string().uuid(),
+});
+
+export type UserIdType = z.infer<typeof userIdSchema>;
