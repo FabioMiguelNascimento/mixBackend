@@ -1,6 +1,6 @@
 import UsersInterface from "@/interfaces/user.interface.js";
 import { CreateUserSchema } from "@/schema/user.schema.js";
-import { ConflictError } from "@/utils/errors.js";
+import { ConflictError } from "@/infrastructure/https/error/HttpErrors.js";
 import { User } from "@prisma/client";
 
 export default function makeCreateUser(userInterface: UsersInterface) {
