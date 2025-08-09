@@ -45,9 +45,12 @@ model User {
   name      String
   email     String   @unique
   password  String
+  phone     String?  @unique 
   role      Role     @default(USER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  orders Order[] 
 
   @@map("users")
 }
@@ -151,6 +154,9 @@ model Order {
   status        OrderStatus @default(PENDING)
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
 
   orderItems OrderItem[]
 
