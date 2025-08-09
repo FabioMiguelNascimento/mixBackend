@@ -1,6 +1,6 @@
 import prisma from "@/infrastructure/database/prisma.js";
 import ITagRepository from "@/interfaces/tag.interface.js";
-import { CreateTagInput } from "@/schema/tag.schema.js";
+import { CreateTagInput, UpdateTagInput } from "@/schema/tag.schema.js";
 import { Tag } from "@prisma/client";
 
 export default class TagRepository implements ITagRepository {
@@ -30,6 +30,13 @@ export default class TagRepository implements ITagRepository {
     async delete(id: string): Promise<void> {
         await prisma.tag.delete({
             where: { id },
+        });
+    }
+
+    async update(id: string, data: UpdateTagInput): Promise<Tag | null> {
+        return prisma.tag.update({
+            where: { id },
+            data: { name: data.name },
         });
     }
 }

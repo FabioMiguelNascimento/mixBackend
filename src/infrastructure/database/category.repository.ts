@@ -1,6 +1,6 @@
 import prisma from "@/infrastructure/database/prisma.js";
 import ICategoryRepository from "@/interfaces/category.interface.js";
-import { CreateCategoryInput } from "@/schema/category.schema.js";
+import { CreateCategoryInput, UpdateCategoryInput } from "@/schema/category.schema.js";
 import { Category } from "@prisma/client";
 
 export default class CategoryRepository implements ICategoryRepository {
@@ -30,6 +30,13 @@ export default class CategoryRepository implements ICategoryRepository {
     async delete(id: string): Promise<void> {
         await prisma.category.delete({
             where: { id },
+        });
+    }
+
+    async update(id: string, data: UpdateCategoryInput): Promise<Category | null> {
+        return prisma.category.update({
+            where: { id },
+            data: { name: data.name },
         });
     }
 }
