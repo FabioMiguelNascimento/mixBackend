@@ -31,7 +31,7 @@ export default class ProductRepository implements IProductRepository {
 
         if (images && images.length > 0) {
             dataToCreate.images = {
-                create: images.map(image => ({ url: image.url })),
+                create: images.map(image => ({ key: image.key })),
             };
         }
 
@@ -184,7 +184,7 @@ export default class ProductRepository implements IProductRepository {
             if (images) {
                 await tx.image.deleteMany({ where: { productId: id } });
                 dataToUpdate.images = {
-                    create: images.map(image => ({ url: image.url })),
+                    create: images.map(image => ({ key: image.key })),
                 };
             }
 

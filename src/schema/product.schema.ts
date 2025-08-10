@@ -9,7 +9,7 @@ const BasketItemSchema = z.object({
 });
 
 const ImageSchema = z.object({
-  url: z.string().url('URL da imagem inválida'),
+  key: z.string(),
 });
 
 export const createProductSchema = z
@@ -81,7 +81,7 @@ const UpdateBasketItemSchema = z.object({
 });
 
 const UpdateImageSchema = z.object({
-  url: z.string().url('URL da imagem inválida'),
+  key: z.string(),
 });
 
 export const updateProductSchema = z
@@ -102,11 +102,9 @@ export const updateProductSchema = z
     basketItems: z.array(UpdateBasketItemSchema).optional(),
   })
   .refine((data) => {
-    // If type is updated to BASKET, basketItems must be provided and not empty
     if (data.type === 'BASKET' && (!data.basketItems || data.basketItems.length === 0)) {
       return false;
     }
-    // If type is updated to SINGLE, basketItems should not be provided or must be empty
     if (data.type === 'SINGLE' && data.basketItems && data.basketItems.length > 0) {
       return false;
     }
@@ -119,8 +117,6 @@ export const updateProductSchema = z
     if (data.finalPrice !== undefined && data.price !== undefined) {
       return data.finalPrice <= data.price;
     }
-    // If only one of them is provided, or neither, we can't validate this rule here.
-    // This rule applies only when both are present.
     return true;
   }, {
     message: 'O preço final não pode ser maior que o preço original.',

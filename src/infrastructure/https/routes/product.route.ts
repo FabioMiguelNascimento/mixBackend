@@ -2,8 +2,10 @@ import express from 'express';
 import { createProductSchema, listProductSchema, productIdSchema, updateProductSchema } from '@/schema/product.schema.js';
 import { authMiddleware } from '@/middlewares/authMiddleware.js';
 import { requirePermission } from '@/middlewares/permissionMiddleware.js';
-import { handleFindAllProducts, handleCreateProduct, handleFindProduct, handleUpdateProduct, handleDeleteProduct, handleDeleteProduct } from '../controller/product.controller.js';
+import { handleFindAllProducts, handleCreateProduct, handleFindProduct, handleUpdateProduct, handleDeleteProduct, handleDeleteProduct, handleAddProductImage, handleDeleteProductImage } from '../controller/product.controller.js';
 import { validateBody, validateParams } from '@/middlewares/validateRequestMiddleware.js';
+import { upload } from '../controller/storage.controller.js';
+import { imageIdSchema } from '@/schema/image.schema.js';
 
 const router = express.Router();
 
@@ -16,6 +18,10 @@ router.post('/',validateBody(createProductSchema),handleCreateProduct);
 
 router.patch( '/:id', validateParams(productIdSchema), validateBody(updateProductSchema), handleUpdateProduct);
 
-
 router.delete('/:id', validateParams(productIdSchema), handleDeleteProduct);
+
+router.post('/:id/images', validateParams(productIdSchema),upload.single('image'),handleAddProductImage);
+
+router.delete('/images/:imageId',validateParams(imageIdSchema),handleDeleteProductImage);
+
 export default router;
