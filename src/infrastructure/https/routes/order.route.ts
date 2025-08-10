@@ -17,12 +17,6 @@ router.get('/:id', validateParams(OrderIdSchema), handleFindOrderById);
 
 router.patch('/status/:id', validateBody(updateOrderStatusSchema), validateParams(OrderIdSchema), handleUpdateOrderStatus);
 
-// Route for updating an entire order (protected)
-router.patch(
-    '/:id',
-    validateParams(OrderIdSchema),
-    validateBody(updateOrderSchema),
-    handleUpdateOrder
-);
+router.patch('/:id', validateParams(OrderIdSchema), validateBody(updateOrderSchema), handleUpdateOrder);
 
 export default router;

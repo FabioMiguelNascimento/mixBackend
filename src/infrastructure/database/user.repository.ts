@@ -13,7 +13,8 @@ export default class UserRepository implements UsersInterface {
             data: {
                 name: user.name,
                 email: user.email,
-                password: hashedPassword
+                password: hashedPassword,
+                phone: user.phone, // Include phone in creation
             }
         });
     }
@@ -22,6 +23,14 @@ export default class UserRepository implements UsersInterface {
         return prisma.user.findUnique({
             where: {
                 email: email
+            }
+        });
+    }
+
+    async findUserByPhone(phone: string): Promise<User | null> {
+        return prisma.user.findUnique({
+            where: {
+                phone: phone
             }
         });
     }

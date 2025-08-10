@@ -4,6 +4,8 @@ import express from 'express';
 import { handleCreateUser, handleDeleteUser, handleListUsers } from '../controller/user.controller.js';
 import { requirePermission } from '@/middlewares/permissionMiddleware.js';
 import { authMiddleware } from '@/middlewares/authMiddleware.js';
+import { listOrderSchema } from '@/schema/order.schema.js';
+import { handleFindMyOrders } from '../controller/order.controller.js';
 
 const router = express.Router();
 
@@ -17,4 +19,5 @@ router.get('/', requirePermission(['ADMIN', 'MANAGER']), handleListUsers)
 
 router.delete('/:id', requirePermission(['ADMIN', 'MANAGER']), validateParams(userIdSchema), handleDeleteUser);
 
+router.post('/me/orders', validateBody(listOrderSchema), handleFindMyOrders);
 export default router;

@@ -5,16 +5,18 @@ import makeFindAllOrders from '@/use-cases/order/findAllOrders.js';
 import makeFindOrderById from '@/use-cases/order/findOrderById.js';
 import makeUpdateOrderStatus from '@/use-cases/order/updateOrderStatus.js';
 import makeUpdateOrder from '@/use-cases/order/updateOrder.js';
-import { CreateOrderInput, ListOrderInput, OrderIdSchema } from '@/schema/order.schema.js';
+import makeFindMyOrders from '@/use-cases/order/findMyOrders.js';
+import { CreateOrderInput, ListOrderInput } from '@/schema/order.schema.js';
 
 const orderRepository = new OrderRepository();
 
 export async function handleCreateOrder(req: Request, res: Response, next: NextFunction) {
     try {
-        const order: CreateOrderInput = req.validatedData;
+        const orderData: CreateOrderInput = req.validatedData;
+        const userId = req.userId;
 
         const createOrder = makeCreateOrder(orderRepository);
-        const createdOrder = await createOrder(order);
+        const createdOrder = await createOrder({ ...orderData, userId });
         
         res.status(201).json({ code: 201, message: 'Pedido criado com sucesso', data: createdOrder });
     } catch (error) {
@@ -71,6 +73,20 @@ export async function handleUpdateOrder(req: Request, res: Response, next: NextF
         const updatedOrder = await updateOrder(id, data);
 
         res.status(200).json({ code: 200, message: 'Pedido atualizado com sucesso', data: updatedOrder });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export async function handleFindMyOrders(req: Request, res: Response, next: NextFunction) {
+    try {
+        const userId = req.userId;
+        const params: ListOrderInput = req.validatedData;
+
+        const findMyOrders = makeFindMyOrders(orderRepository);
+        const result = await findMyOrders(userId, params);
+
+        res.status(200).json({ code: 200, message: 'Meus pedidos encontrados com sucesso', data: result });
     } catch (error) {
         next(error);
     }

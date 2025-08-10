@@ -15,4 +15,5 @@ export default interface IOrderRepository {
     findById(id: string): Promise<Order | null>;
     updateStatus(id: string, status: OrderStatus): Promise<Order | null>;
     update(id: string, data: UpdateOrderInput): Promise<Order | null>;
+    findUserOrders(userId: string, params: ListOrderInput): Promise<PaginatedOrdersResult>;
 }

@@ -1,0 +1,1 @@
+export type CreateOrderWithUserIdInput = CreateOrderInput & { userId?: string };

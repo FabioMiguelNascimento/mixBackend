@@ -4,6 +4,7 @@ import { User } from "@prisma/client";
 export default interface UsersInterface {
     create(user: CreateUserSchema): Promise<User | void>;
     findUserByEmail(email: string): Promise<User | null>;
+    findUserByPhone(phone: string): Promise<User | null>;
     findAll(): Promise<User[] | void>;
     findUserById(id: UserIdType): Promise<User | null>;
     delete(id: UserIdType): Promise<void>;
