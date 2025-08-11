@@ -26,7 +26,7 @@ export const listOrderSchema = z.object({
     startDate: z.coerce.date().optional(),
     endDate: z.coerce.date().optional(),
 
-    sortBy: z.enum(['createdAt', 'totalAmount']).default('createdAt'),
+    sortBy: z.enum(['createdAt', 'totalAmount','status']).default('createdAt'),
     sortOrder: z.enum(['asc', 'desc']).default('desc'),
 });
 
