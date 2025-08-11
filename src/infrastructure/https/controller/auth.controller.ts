@@ -13,7 +13,7 @@ export const handleLoginUser = async (req: Request, res: Response, next: NextFun
         const loginUserCase = makeLoginUser(userRepository);
         const user = await loginUserCase({ email, password });
 
-        res.status(200).json({ code: 200, message: 'Login realizado com sucesso', user });
+        res.status(200).json({ code: 200, message: 'Login realizado com sucesso', data: user });
     } catch (err) {
         next(err)
     }
