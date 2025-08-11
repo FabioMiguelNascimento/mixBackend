@@ -3,6 +3,7 @@ import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import http from 'http';
+import cors from 'cors';
 import { errorHandler, requestNotFound } from './infrastructure/https/error/ErrorHandler.js';
 import authRoute from './infrastructure/https/routes/auth.route.js';
 import categoryRoute from './infrastructure/https/routes/category.route.js';
@@ -21,6 +22,7 @@ const server = http.createServer(app);
 app.use(express.json());
 app.use(morgan('tiny'));
 app.use(helmet());
+app.use(cors());
 
 app.use('/api/ping', pingRoute);
 app.use('/api/user', userRoute);
