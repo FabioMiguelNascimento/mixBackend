@@ -12,11 +12,7 @@ const storageService = new StorageService();
 
 export const handleFileDelete = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { key } = req.params;
-    
-    if (!key) {
-      throw new BadRequestError("Key é obrigatória");
-    }
+    const { key } = req.validatedData;
 
     const file = await doesFileExist(key);
     if(!file) {
@@ -63,11 +59,7 @@ export const handleFileUpload = async (req: Request, res: Response, next: NextFu
 
 export const handleFileDownload = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { key } = req.params;
-
-    if (!key) {
-      throw new BadRequestError("Chave é obrigatória");
-    }
+    const { key } = req.validatedData;
 
     const file = await doesFileExist(key);
     if(!file) {

@@ -7,6 +7,8 @@ import {
 } from "../controller/storage.controller.js";
 import { authMiddleware } from "../../../middlewares/authMiddleware.js";
 import { requirePermission } from "@/middlewares/permissionMiddleware.js";
+import { validateParams } from "@/middlewares/validateRequestMiddleware.js";
+import { storageParamsSchema } from "../../../schema/storage.schema.js";
 
 const router = Router();
 
@@ -19,16 +21,18 @@ router.post(
 );
 
 router.get(
-  "/:key(*)",
+  "/*key",
   authMiddleware,
   requirePermission(["ADMIN", "MANAGER", "SELLER"]),
+  validateParams(storageParamsSchema),
   handleFileDownload
 );
 
 router.delete(
-  "/:key(*)",
+  "/*key",
   authMiddleware,
   requirePermission(["ADMIN", "MANAGER", "SELLER"]),
+  validateParams(storageParamsSchema),
   handleFileDelete
 );
 
