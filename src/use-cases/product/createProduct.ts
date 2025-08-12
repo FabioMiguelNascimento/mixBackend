@@ -24,6 +24,10 @@ export default function makeCreateProduct(productRepository: IProductRepository)
         
         const productToCreate = { ...productData };
 
+        if (productToCreate.discount !== undefined && productToCreate.price !== undefined) {
+            productToCreate.finalPrice = Math.max(0, productToCreate.price - productToCreate.discount);
+        }
+
         if (!productToCreate.sku) {
             productToCreate.sku = generateSku(productToCreate.name);
         } else {
