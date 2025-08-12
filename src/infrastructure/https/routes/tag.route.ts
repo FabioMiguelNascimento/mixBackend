@@ -13,5 +13,5 @@ router.use(requirePermission(['ADMIN', 'MANAGER', 'SELLER']));
 router.post('/', validateRequest(createTagSchema), handleCreateTag);
 router.post('/list', validateBody(listTagSchema), handleFindAllTags);
 router.delete('/:id', validateParams(TagIdSchema), handleDeleteTag);
-router.patch('/:id', validateParams(TagIdSchema), validateRequest(updateTagSchema), handleUpdateTag);
+router.patch('/:id', validateParams(TagIdSchema), validateBody(updateTagSchema), handleUpdateTag);
 export default router;
