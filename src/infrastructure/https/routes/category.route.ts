@@ -11,7 +11,7 @@ router.use(authMiddleware);
 router.use(requirePermission(['ADMIN', 'MANAGER', 'SELLER']))
 
 router.post('/', validateBody(createCategorySchema), handleCreateCategory);
-router.get('/', validateQuery(listCategorySchema), handleFindAllCategories);
+router.post('/list', validateBody(listCategorySchema), handleFindAllCategories);
 router.delete('/:id', validateParams(categoryIdSchema), handleDeleteCategory);
 router.patch('/:id', validateParams(categoryIdSchema), validateBody(updateCategorySchema), handleUpdateCategory);
 
