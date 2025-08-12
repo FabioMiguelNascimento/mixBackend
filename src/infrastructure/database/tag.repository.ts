@@ -9,10 +9,21 @@ export default class TagRepository implements ITagRepository {
         return prisma.tag.create({ data });
     }
 
-    async findAll(): Promise<Tag[]> {
-        return prisma.tag.findMany({
-            orderBy: { name: 'asc' }
+    async findAll(query: { name?: string, page: number, limit: number, sortBy: string, sortOrder: 'asc' | 'desc' }): Promise<{ tags: Tag[], total: number }> {
+        const { name, page, limit, sortBy, sortOrder } = query;
+
+        const where = name ? { name: { contains: name, mode: 'insensitive' } } : {};
+
+        const tags = await prisma.tag.findMany({
+            where,
+            skip: (page - 1) * limit,
+            take: limit,
+            orderBy: { [sortBy]: sortOrder },
         });
+
+        const total = await prisma.tag.count({ where });
+
+        return { tags, total };
     }
 
     async findByName(name: string): Promise<Tag | null> {

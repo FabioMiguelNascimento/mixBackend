@@ -15,3 +15,13 @@ export type UpdateTagInput = z.infer<typeof updateTagSchema>;
 export const TagId = z.object({
   id: z.string().uuid('ID inválido. Deve ser um UUID válido.'),
 });
+
+export const listTagSchema = z.object({
+  page: z.number().int().min(1).default(1),
+  limit: z.number().int().min(1).max(100).default(10),
+  name: z.string().optional(),
+  sortBy: z.enum(['createdAt', 'name', 'updatedAt']).default('createdAt'),
+  sortOrder: z.enum(['asc', 'desc']).default('desc'),
+});
+
+export type ListTagInput = z.infer<typeof listTagSchema>;

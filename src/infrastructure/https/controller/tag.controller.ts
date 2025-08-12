@@ -19,9 +19,12 @@ export async function handleCreateTag(req: Request, res: Response, next: NextFun
 
 export async function handleFindAllTags(req: Request, res: Response, next: NextFunction) {
     try {
+        const { page, limit, sortBy, sortOrder, name } = req.validatedData;
+
         const findAllTags = makeFindAllTags(tagRepository);
-        const tags = await findAllTags();
-        res.status(200).json(tags);
+        const tags = await findAllTags({ page, limit, sortBy, sortOrder, name });
+
+        res.status(200).json({ code: 200, message: 'Tags listadas com sucesso', data: tags });
     } catch (error) {
         next(error);
     }
