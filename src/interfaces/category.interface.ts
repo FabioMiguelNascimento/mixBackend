@@ -3,7 +3,7 @@ import { CreateCategoryInput, UpdateCategoryInput } from "@/schema/category.sche
 
 export default interface ICategoryRepository {
     create(data: CreateCategoryInput): Promise<Category>;
-    findAll(): Promise<Category[]>;
+    findAll(query: { name?: string, page: number, limit: number, sortBy: string, sortOrder: 'asc' | 'desc' }): Promise<{ categories: Category[], total: number }>;
     findByName(name: string): Promise<Category | null>;
     findById(id: string): Promise<Category | null>;
     delete(id: string): Promise<void>;

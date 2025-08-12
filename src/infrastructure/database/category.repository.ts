@@ -9,10 +9,21 @@ export default class CategoryRepository implements ICategoryRepository {
         return prisma.category.create({ data });
     }
 
-    async findAll(): Promise<Category[]> {
-        return prisma.category.findMany({
-            orderBy: { name: 'asc' }
+    async findAll(query: { name?: string, page: number, limit: number, sortBy: string, sortOrder: 'asc' | 'desc' }): Promise<{ categories: Category[], total: number }> {
+        const { name, page, limit, sortBy, sortOrder } = query;
+
+        const where = name ? { name: { contains: name, mode: 'insensitive' } } : {};
+
+        const categories = await prisma.category.findMany({
+            where,
+            skip: (page - 1) * limit,
+            take: limit,
+            orderBy: { [sortBy]: sortOrder },
         });
+
+        const total = await prisma.category.count({ where });
+
+        return { categories, total };
     }
 
     async findByName(name: string): Promise<Category | null> {

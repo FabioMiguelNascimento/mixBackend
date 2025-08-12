@@ -17,3 +17,13 @@ export const categoryIdSchema = z.object({
 });
 
 export type CategoryId = z.infer<typeof categoryIdSchema>;
+
+export const listCategorySchema = z.object({
+  page: z.number().int().min(1).default(1),
+  limit: z.number().int().min(1).max(100).default(10),
+  name: z.string().optional(),
+  sortBy: z.enum(['createdAt', 'name']).default('createdAt'),
+  sortOrder: z.enum(['asc', 'desc']).default('desc'),
+});
+
+export type ListCategoryInput = z.infer<typeof listCategorySchema>;

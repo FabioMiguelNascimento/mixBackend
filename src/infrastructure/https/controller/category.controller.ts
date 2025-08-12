@@ -19,8 +19,10 @@ export async function handleCreateCategory(req: Request, res: Response, next: Ne
 
 export async function handleFindAllCategories(req: Request, res: Response, next: NextFunction) {
     try {
+        const { page, limit, sortBy, sortOrder, name } = req.validatedData;
+
         const findAllCategories = makeFindAllCategories(categoryRepository);
-        const categories = await findAllCategories();
+        const categories = await findAllCategories({ page, limit, sortBy, sortOrder, name });
         res.status(200).json({ code: 200, message: 'Categorias encontradas com sucesso.', data: categories });
     } catch (error) {
         next(error);
