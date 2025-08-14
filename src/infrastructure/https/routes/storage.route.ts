@@ -3,12 +3,14 @@ import {
   handleFileDelete,
   handleFileDownload,
   handleFileUpload,
+  handleBatchFileDownload,
+  handleImageProxy,
   upload,
 } from "../controller/storage.controller.js";
 import { authMiddleware } from "../../../middlewares/authMiddleware.js";
 import { requirePermission } from "@/middlewares/permissionMiddleware.js";
-import { validateParams } from "@/middlewares/validateRequestMiddleware.js";
-import { storageParamsSchema } from "../../../schema/storage.schema.js";
+import { validateParams, validateBody } from "@/middlewares/validateRequestMiddleware.js";
+import { storageParamsSchema, batchStorageSchema } from "../../../schema/storage.schema.js";
 
 const router = Router();
 
@@ -18,6 +20,22 @@ router.post(
   requirePermission(["ADMIN", "MANAGER", "SELLER"]),
   upload.single("file"),
   handleFileUpload
+);
+
+router.post(
+  "/batch",
+  authMiddleware,
+  requirePermission(["ADMIN", "MANAGER", "SELLER"]),
+  validateBody(batchStorageSchema),
+  handleBatchFileDownload
+);
+
+router.get(
+  "/image/*key",
+  authMiddleware,
+  requirePermission(["ADMIN", "MANAGER", "SELLER"]),
+  validateParams(storageParamsSchema),
+  handleImageProxy
 );
 
 router.get(

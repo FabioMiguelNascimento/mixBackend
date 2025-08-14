@@ -17,7 +17,7 @@ export class StorageService {
   async uploadFile(
     fileData: { originalname: string; buffer: Buffer; mimetype: string },
     prefix: string,
-    bucketName: string = BUCKET_NAME
+    bucketName: string = BUCKET_NAME!
   ) {
     const cleanPrefix = this.#cleanKey(prefix);
     const fileExtension = fileData.originalname.split('.').pop() || 'bin';
@@ -25,7 +25,7 @@ export class StorageService {
     const finalKey = `${cleanPrefix}/${uniqueFileName}`;
 
     const command = new PutObjectCommand({
-      Bucket: bucketName,
+      Bucket: BUCKET_NAME!,
       Key: finalKey,
       Body: fileData.buffer,
       ContentType: fileData.mimetype,
@@ -59,7 +59,7 @@ export class StorageService {
     }
   }
 
-  async getFile(key: string, bucketName: string = BUCKET_NAME) {
+  async getFile(key: string, bucketName: string = BUCKET_NAME!) {
     const cleanKey = this.#cleanKey(key);
 
     const command = new GetObjectCommand({
@@ -77,11 +77,32 @@ export class StorageService {
     }
   }
 
+  async getBatchFiles(keys: string[], bucketName: string = BUCKET_NAME!): Promise<Record<string, string | null>> {
+    const urlMap: Record<string, string | null> = {};
+
+    try {
+      const promises = keys.map(async (key) => {
+        try {
+          const url = await this.getFile(key, bucketName);
+          urlMap[key] = url;
+        } catch (error) {
+          console.error(`Erro ao buscar URL para chave ${key}:`, error);
+          urlMap[key] = null;
+        }
+      });
+
+      await Promise.all(promises);
+      return urlMap;
+    } catch (error: any) {
+      throw new Error(`Erro ao buscar arquivos em lote: ${error.message}`);
+    }
+  }
+
   async deleteFile(key: string) {
     const cleanKey = this.#cleanKey(key);
 
     const command = new DeleteObjectCommand({
-      Bucket: BUCKET_NAME,
+      Bucket: BUCKET_NAME!,
       Key: cleanKey,
     });
 
@@ -97,7 +118,7 @@ export class StorageService {
     const cleanPrefix = this.#cleanKey(prefix);
 
     const listCommand = new ListObjectsV2Command({
-      Bucket: BUCKET_NAME,
+      Bucket: BUCKET_NAME!,
       Prefix: cleanPrefix,
     });
 
@@ -109,7 +130,7 @@ export class StorageService {
     }
 
     const deleteParams = {
-      Bucket: BUCKET_NAME,
+      Bucket: BUCKET_NAME!,
       Delete: {
         Objects: listedObjects.Contents.map(({ Key }) => ({ Key })),
       },

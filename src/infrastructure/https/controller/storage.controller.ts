@@ -78,9 +78,44 @@ export const handleFileDownload = async (req: Request, res: Response, next: Next
   }
 };
 
+export const handleBatchFileDownload = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { keys } = req.validatedData;
+
+    const urlMap = await storageService.getBatchFiles(keys);
+    
+    res.status(200).json({ 
+      code: 200,
+      message: "URLs geradas com sucesso",
+      data: { urls: urlMap }
+    });
+  } catch (error: any) {
+    next(error);
+  }
+};
+
+export const handleImageProxy = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { key } = req.validatedData;
+
+    const file = await doesFileExist(key);
+    if(!file) {
+      throw new NotFoundError("Arquivo não encontrado");
+    }
+
+    const url = await storageService.getFile(key);
+    
+    // Redirect to the signed URL instead of serving JSON
+    // This creates a proxy that serves the actual image
+    res.redirect(302, url);
+  } catch (error: any) {
+    next(error);
+  }
+};
+
 const doesFileExist = async (key: string) => {
   const command = new HeadObjectCommand({
-    Bucket: BUCKET_NAME,
+    Bucket: BUCKET_NAME!,
     Key: key
   });
 
