@@ -32,16 +32,12 @@ router.post(
 
 router.get(
   "/image/*key",
-  authMiddleware,
-  requirePermission(["ADMIN", "MANAGER", "SELLER"]),
   validateParams(storageParamsSchema),
   handleImageProxy
 );
 
 router.get(
-  "/*key",
-  authMiddleware,
-  requirePermission(["ADMIN", "MANAGER", "SELLER"]),
+  "/download/*key",
   validateParams(storageParamsSchema),
   handleFileDownload
 );

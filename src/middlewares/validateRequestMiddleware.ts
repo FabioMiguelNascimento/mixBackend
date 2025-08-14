@@ -11,6 +11,9 @@ export const validateRequest = (
 
       switch (source) {
         case "params":
+          if (req.params.key && Array.isArray(req.params.key)) {
+            req.params.key = req.params.key.join('/');
+          }
           dataToValidate = req.params;
           break;
         case "query":
