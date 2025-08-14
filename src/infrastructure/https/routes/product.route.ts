@@ -20,7 +20,7 @@ router.patch( '/:id', validateParams(productIdSchema), validateBody(updateProduc
 
 router.delete('/:id', validateParams(productIdSchema), handleDeleteProduct);
 
-router.post('/:id/images', validateParams(productIdSchema),upload.single('image'),handleAddProductImage);
+router.post('/images/:id', validateParams(productIdSchema),upload.single('image'),handleAddProductImage);
 
 router.delete('/images/:imageId',validateParams(imageIdSchema),handleDeleteProductImage);
 
