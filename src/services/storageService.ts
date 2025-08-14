@@ -1,13 +1,13 @@
+import { BUCKET_NAME, s3Client } from "@/utils/s3client.js";
 import {
-  DeleteObjectsCommand,
-  ListObjectsV2Command,
   DeleteObjectCommand,
+  DeleteObjectsCommand,
   GetObjectCommand,
+  ListObjectsV2Command,
   PutObjectCommand,
 } from "@aws-sdk/client-s3";
-import { randomUUID } from "node:crypto";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { BUCKET_NAME, s3Client } from "@/utils/s3client.js";
+import { randomUUID } from "node:crypto";
 
 export class StorageService {
   #cleanKey(key: string): string {

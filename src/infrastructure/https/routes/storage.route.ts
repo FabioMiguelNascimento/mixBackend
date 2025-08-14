@@ -1,16 +1,16 @@
+import { requirePermission } from "@/middlewares/permissionMiddleware.js";
+import { validateBody, validateParams } from "@/middlewares/validateRequestMiddleware.js";
 import { Router } from "express";
+import { authMiddleware } from "../../../middlewares/authMiddleware.js";
+import { batchStorageSchema, storageParamsSchema } from "../../../schema/storage.schema.js";
 import {
+  handleBatchFileDownload,
   handleFileDelete,
   handleFileDownload,
   handleFileUpload,
-  handleBatchFileDownload,
   handleImageProxy,
   upload,
 } from "../controller/storage.controller.js";
-import { authMiddleware } from "../../../middlewares/authMiddleware.js";
-import { requirePermission } from "@/middlewares/permissionMiddleware.js";
-import { validateParams, validateBody } from "@/middlewares/validateRequestMiddleware.js";
-import { storageParamsSchema, batchStorageSchema } from "../../../schema/storage.schema.js";
 
 const router = Router();
 

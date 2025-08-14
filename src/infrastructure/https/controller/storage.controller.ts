@@ -1,9 +1,9 @@
 import { HeadObjectCommand } from "@aws-sdk/client-s3";
 import { NextFunction, Request, Response } from "express";
 import multer from "multer";
+import { StorageService } from "../../../services/storageService.js";
 import { BUCKET_NAME, s3Client } from "../../../utils/s3client.js";
 import { BadRequestError, NotFoundError } from "../error/HttpErrors.js";
-import { StorageService } from "../../../services/storageService.js";
 
 const storage = multer.memoryStorage();
 export const upload = multer({ storage: storage });
@@ -105,8 +105,6 @@ export const handleImageProxy = async (req: Request, res: Response, next: NextFu
 
     const url = await storageService.getFile(key);
     
-    // Redirect to the signed URL instead of serving JSON
-    // This creates a proxy that serves the actual image
     res.redirect(302, url);
   } catch (error: any) {
     next(error);
