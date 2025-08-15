@@ -1,6 +1,7 @@
 import UserRepository from '@/infrastructure/database/user.repository.js';
 import { LoginSchemaType, RegisterSchemaType } from '@/schema/auth.schema.js';
 import makeLoginUser from '@/use-cases/auth/login.js';
+import makeRefreshToken from '@/use-cases/auth/refreshToken.js';
 import makeRegisterUser from '@/use-cases/auth/registerUser.js';
 import { Request, Response, NextFunction } from 'express';
 
@@ -34,6 +35,19 @@ export const handleRegisterUser = async (req: Request, res: Response, next: Next
         } else {
             res.status(201).json({ code: 201, message: 'Usuário registrado com sucesso', data: newUser });
         }
+    } catch (err) {
+        next(err);
+    }
+}
+
+export const handleRefreshToken = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { refreshToken } = req.body;
+
+        const refreshTokenCase = makeRefreshToken(userRepository);
+        const newAccessToken = await refreshTokenCase(refreshToken);
+
+        res.status(200).json({ code: 200, message: 'Token atualizado com sucesso', data: newAccessToken });
     } catch (err) {
         next(err);
     }

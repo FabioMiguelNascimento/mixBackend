@@ -6,6 +6,7 @@ export default interface UsersInterface {
     findUserByEmail(email: string): Promise<User | null>;
     findUserByPhone(phone: string): Promise<User | null>;
     findAll(): Promise<User[] | void>;
-    findUserById(id: UserIdType): Promise<User | null>;
-    delete(id: UserIdType): Promise<void>;
+    findUserById(id: string): Promise<User | null>;
+    delete(id: string): Promise<void>;
+    updateUser(id: string, user: Partial<User>): Promise<User | null>;
 }

@@ -1,8 +1,8 @@
-import UsersInterface from "@/interfaces/user.interface.js";
 import prisma from "@/infrastructure/database/prisma.js";
-import { CreateUserSchema, UserIdType } from "@/schema/user.schema.js";
-import { User } from "@prisma/client";
+import UsersInterface from "@/interfaces/user.interface.js";
+import { CreateUserSchema } from "@/schema/user.schema.js";
 import { encodePassword } from "@/utils/bcrypt.js";
+import { User } from "@prisma/client";
 
 export default class UserRepository implements UsersInterface {
 
@@ -48,19 +48,28 @@ export default class UserRepository implements UsersInterface {
         });
     }
 
-    async findUserById(id: UserIdType): Promise<User | null> {
+    async findUserById(id: string): Promise<User | null> {
         return prisma.user.findUnique({
             where: {
-                id: id.id
+                id: id
             }
         });
     }
 
-    async delete(id: UserIdType): Promise<void> {
+    async delete(id: string): Promise<void> {
         await prisma.user.delete({
             where: {
-                id: id.id
+                id: id
             }
+        });
+    }
+
+    async updateUser(id: string, user: Partial<User>): Promise<User | null> {
+        return prisma.user.update({
+            where: {
+                id: id
+            },
+            data: user
         });
     }
 }
