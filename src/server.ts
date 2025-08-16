@@ -19,10 +19,16 @@ const PORT = process.env.PORT ;
 
 const server = http.createServer(app);
 
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
 app.use(express.json());
 app.use(morgan('tiny'));
 app.use(helmet());
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.use('/api/ping', pingRoute);
 app.use('/api/user', userRoute);
