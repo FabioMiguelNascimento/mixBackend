@@ -1,15 +1,16 @@
-import { Request, Response, NextFunction } from 'express';
-import ProductRepository from '@/infrastructure/database/product.repository.js';
 import ImageRepository from '@/infrastructure/database/image.repository.js';
-import { StorageService } from '@/services/storageService.js';
-import makeCreateProduct from '@/use-cases/product/createProduct.js';
-import makeFindAllProducts from '@/use-cases/product/findAllProducts.js';
+import ProductRepository from '@/infrastructure/database/product.repository.js';
 import { CreateProductInput, ListProductInput, UpdateProductInput } from '@/schema/product.schema.js';
-import makeFindProduct from '@/use-cases/product/findById.js';
-import makeUpdateProduct from '@/use-cases/product/updateProduct.js';
+import { StorageService } from '@/services/storageService.js';
+import makeAddProductImages from '@/use-cases/product/addProductImages.js';
+import makeCreateProduct from '@/use-cases/product/createProduct.js';
 import makeDeleteProduct from '@/use-cases/product/deleteProduct.js';
-import makeAddProductImage from '@/use-cases/product/addProductImage.js';
 import makeDeleteProductImage from '@/use-cases/product/deleteProductImage.js';
+import makeFindAllProducts from '@/use-cases/product/findAllProducts.js';
+import makeFindProduct from '@/use-cases/product/findById.js';
+import makeGetImageUrls from '@/use-cases/product/getImageUrls.js';
+import makeUpdateProduct from '@/use-cases/product/updateProduct.js';
+import { NextFunction, Request, Response } from 'express';
 
 const productRepository = new ProductRepository();
 const imageRepository = new ImageRepository();
@@ -81,19 +82,19 @@ export const handleDeleteProduct = async (req: Request, res: Response, next: Nex
   }
 };
 
-export const handleAddProductImage = async (req: Request, res: Response, next: NextFunction) => {
+export const handleAddProductImages = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id: productId } = req.params;
-    const file = req.file;
+    const files = req.files as Express.Multer.File[];
 
-    if (!file) {
+    if (!files || files.length === 0) {
       return res.status(400).json({ message: 'Nenhum arquivo enviado.' });
     }
 
-    const addProductImageCase = makeAddProductImage(productRepository, imageRepository, storageService);
-    const image = await addProductImageCase(productId, file);
+    const addProductImagesCase = makeAddProductImages(productRepository, imageRepository, storageService);
+    const images = await addProductImagesCase(productId, files);
 
-    res.status(201).json({ code: 201, message: 'Imagem do produto adicionada com sucesso', data: image });
+    res.status(201).json({ code: 201, message: 'Imagens do produto adicionadas com sucesso', data: images });
   } catch (error) {
     next(error);
   }
@@ -107,6 +108,19 @@ export const handleDeleteProductImage = async (req: Request, res: Response, next
     await deleteProductImageCase(imageId);
 
     res.status(204).send({ code: 204, message: "Imagem do produto deletada com sucesso" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const handleGetImageUrls = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { keys } = req.body;
+
+    const getImageUrlsCase = makeGetImageUrls(storageService);
+    const urls = await getImageUrlsCase(keys);
+
+    res.status(200).json({ code: 200, message: 'URLs das imagens obtidas com sucesso', data: urls });
   } catch (error) {
     next(error);
   }

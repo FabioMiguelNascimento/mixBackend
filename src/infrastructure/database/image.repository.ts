@@ -1,14 +1,12 @@
 import prisma from "@/infrastructure/database/prisma.js";
 import IImageRepository from "@/interfaces/image.interface.js";
+import { CreateImageInput } from "@/schema/product.schema.js";
 import { Image } from "@prisma/client";
 
 export default class ImageRepository implements IImageRepository {
-  async create(productId: string, key: string): Promise<Image> {
+  async create(data: CreateImageInput): Promise<Image> {
     return prisma.image.create({
-      data: {
-        productId,
-        key,
-      },
+      data,
     });
   }
 

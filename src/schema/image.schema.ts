@@ -5,3 +5,7 @@ export const imageIdSchema = z.object({
 });
 
 export type ImageId = z.infer<typeof imageIdSchema>;
+
+export const imageKeysSchema = z.object({
+  keys: z.array(z.string()),
+});

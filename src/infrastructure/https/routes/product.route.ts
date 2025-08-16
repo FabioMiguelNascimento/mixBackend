@@ -1,16 +1,18 @@
+import { authMiddleware } from "@/middlewares/authMiddleware.js";
+import { requirePermission } from "@/middlewares/permissionMiddleware.js";
+import { validateBody, validateParams } from "@/middlewares/validateRequestMiddleware.js";
+import { imageIdSchema, imageKeysSchema } from "@/schema/image.schema.js";
+import { createProductSchema, listProductSchema, productIdSchema, updateProductSchema } from "@/schema/product.schema.js";
+import { handleAddProductImages, handleCreateProduct, handleDeleteProduct, handleDeleteProductImage, handleFindAllProducts, handleFindProduct, handleGetImageUrls, handleUpdateProduct } from "../controller/product.controller.js";
+import { upload } from "../controller/storage.controller.js";
 import express from 'express';
-import { createProductSchema, listProductSchema, productIdSchema, updateProductSchema } from '@/schema/product.schema.js';
-import { authMiddleware } from '@/middlewares/authMiddleware.js';
-import { requirePermission } from '@/middlewares/permissionMiddleware.js';
-import { handleFindAllProducts, handleCreateProduct, handleFindProduct, handleUpdateProduct, handleDeleteProduct, handleDeleteProduct, handleAddProductImage, handleDeleteProductImage } from '../controller/product.controller.js';
-import { validateBody, validateParams } from '@/middlewares/validateRequestMiddleware.js';
-import { upload } from '../controller/storage.controller.js';
-import { imageIdSchema } from '@/schema/image.schema.js';
+
 
 const router = express.Router();
 
 router.post('/list',validateBody(listProductSchema),handleFindAllProducts);
 router.get('/:id', validateParams(productIdSchema), handleFindProduct);
+router.post('/images/urls', validateBody(imageKeysSchema), handleGetImageUrls);
 
 router.use(authMiddleware, requirePermission(['ADMIN', 'MANAGER', 'SELLER']));
 
@@ -20,7 +22,7 @@ router.patch( '/:id', validateParams(productIdSchema), validateBody(updateProduc
 
 router.delete('/:id', validateParams(productIdSchema), handleDeleteProduct);
 
-router.post('/images/:id', validateParams(productIdSchema),upload.single('image'),handleAddProductImage);
+router.post('/images/:id', validateParams(productIdSchema),upload.array('images'),handleAddProductImages);
 
 router.delete('/images/:imageId',validateParams(imageIdSchema),handleDeleteProductImage);
 

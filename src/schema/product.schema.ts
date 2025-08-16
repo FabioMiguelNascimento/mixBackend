@@ -3,6 +3,13 @@ import z from 'zod';
 export const ProductTypeEnum = z.enum(['SINGLE', 'BASKET']);
 export const ProductStatusEnum = z.enum(['ACTIVE', 'DRAFT', 'ARCHIVED']);
 
+export const createImageSchema = z.object({
+  productId: z.string().uuid('ID de produto inválido'),
+  key: z.string(),
+});
+
+export type CreateImageInput = z.infer<typeof createImageSchema>;
+
 const BasketItemSchema = z.object({
   productId: z.string().uuid('ID de produto inválido'),
   quantity: z.number().int().min(1, 'Quantidade deve ser no mínimo 1'),
